@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class Client {
 
 	public static void main(String[] args) throws IOException {
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1; i++) {
 			try {
 				TimeUnit.MILLISECONDS.sleep(250);
 			} catch (InterruptedException e) {
@@ -40,7 +40,7 @@ public class Client {
 //				for (SocketOption<?> option : supportedOptions) {
 //					System.out.println(option.name() + ":" + socketChannel.getOption(option));
 //				}
-				socket.connect(new InetSocketAddress("118.25.42.32", 8888));
+				socket.connect(new InetSocketAddress("127.0.01", 8888));
 //			socket.setReceiveBufferSize(1000);
 				InputStream inputStream = socket.getInputStream();
 				DataOutputStream outtputStream = new DataOutputStream(socket.getOutputStream());
@@ -59,7 +59,7 @@ public class Client {
 				int i = 0;
 				StringBuilder builder;
 				byte[] bytes;
-				while (true) {
+//				while (true) {
 					builder = new StringBuilder();
 					try {
 						TimeUnit.MILLISECONDS.sleep(500);
@@ -74,10 +74,10 @@ public class Client {
 					outtputStream.writeInt(bytes.length + 2 + 4);
 					outtputStream.writeShort(i);
 					outtputStream.write(bytes);
-					if (i >= 10000) {
-						break;
-					}
-				}
+//					if (i >= 10000) {
+//						break;
+//					}
+//				}
 				inputStream.read();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
