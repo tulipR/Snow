@@ -1,4 +1,4 @@
-package io.snow.core;
+package io.snow.core.aio;
 
 import java.io.IOException;
 import java.net.SocketOption;
@@ -6,7 +6,8 @@ import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import io.snow.core.ServerGroupContext;
 
 /**
  * TCP连接的包装类
@@ -45,9 +46,6 @@ public class AioConnect {
 		this.groupContext = groupContext;
 		lastReceiveTime = System.currentTimeMillis();
 		active = true;
-		
-		
-		
 		try {
 			socketChannel.setOption(StandardSocketOptions.TCP_NODELAY, false);
 			Set<SocketOption<?>> supportedOptions = socketChannel.supportedOptions();
@@ -56,7 +54,6 @@ public class AioConnect {
 				System.out.println(option.name() + ":" + object);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -89,7 +86,7 @@ public class AioConnect {
 		return writeBuffer;
 	}
 
-	/** 关闭连接 */
+	/** 主动关闭连接 */
 	public void close() {
 		try {
 			socketChannel.close();

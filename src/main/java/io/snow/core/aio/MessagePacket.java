@@ -1,4 +1,4 @@
-package io.snow.core;
+package io.snow.core.aio;
 
 public class MessagePacket<T> {
 	

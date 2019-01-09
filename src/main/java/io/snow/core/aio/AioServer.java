@@ -1,4 +1,4 @@
-package io.snow.core;
+package io.snow.core.aio;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -10,9 +10,13 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 
+import io.snow.core.ServerGroupContext;
+
 public class AioServer {
 	private ServerGroupContext groupContext;
+	
 	private AsynchronousChannelGroup group;
+	
 	private AsynchronousServerSocketChannel serverSocketChannel;
 	
 	public AioServer(ServerGroupContext groupContext) {
