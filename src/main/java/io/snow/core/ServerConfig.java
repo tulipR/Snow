@@ -9,9 +9,16 @@ package io.snow.core;
  */
 public class ServerConfig {
 
+	/** ip */
 	private final String ip;
+	
+	/** 端口 */
 	private final short port;
+	
+	/** 心跳间隔 */
 	private int heartTime;
+	
+	/** 是否进行心跳检查 */
 	private boolean heartCheck;
 
 	public String getIp() {

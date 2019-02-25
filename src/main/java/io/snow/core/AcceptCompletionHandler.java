@@ -1,12 +1,8 @@
 package io.snow.core;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.SocketOption;
-import java.net.StandardSocketOptions;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.Set;
 
 /**
  * 

@@ -18,15 +18,15 @@ import java.util.concurrent.TimeUnit;
 public class Client {
 
 	public static void main(String[] args) throws IOException {
-		for (int i = 0; i < 100; i++) {
-			try {
-				TimeUnit.MILLISECONDS.sleep(250);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//		for (int i = 0; i < 100; i++) {
+//			try {
+//				TimeUnit.MILLISECONDS.sleep(250);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			new Thread(new client()).start();
-		}
+//		}
 	}
 	
 	static class client implements Runnable{
@@ -40,7 +40,14 @@ public class Client {
 //				for (SocketOption<?> option : supportedOptions) {
 //					System.out.println(option.name() + ":" + socketChannel.getOption(option));
 //				}
-				socket.connect(new InetSocketAddress("118.25.42.32", 8888));
+				
+				socket.connect(new InetSocketAddress("127.0.0.1", 8888));
+				System.out.println("连接成功");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 //			socket.setReceiveBufferSize(1000);
 				InputStream inputStream = socket.getInputStream();
 				DataOutputStream outtputStream = new DataOutputStream(socket.getOutputStream());
@@ -59,7 +66,7 @@ public class Client {
 				int i = 0;
 				StringBuilder builder;
 				byte[] bytes;
-				while (true) {
+//				while (true) {
 					builder = new StringBuilder();
 					try {
 						TimeUnit.MILLISECONDS.sleep(500);
@@ -71,13 +78,14 @@ public class Client {
 					builder.append("<br>客户端正常关闭连接时：</br>会发送FIN数据进行第一次挥手，服务器接受到这个数据后，\r\n" + 
 							" * 会返回一个ACK数据进行第二次挥手，然后触发completed()方法。\r\n * 然后服务器会发送一个FIN数据进行第三次挥手，然后触发failed()方法不正常关闭连接时:</br>只会触发failed()方法");
 					bytes = builder.toString().getBytes();
+					System.out.println(bytes.length);
 					outtputStream.writeInt(bytes.length + 2 + 4);
 					outtputStream.writeShort(i);
 					outtputStream.write(bytes);
-					if (i >= 10000) {
-						break;
-					}
-				}
+//					if (i >= 10000) {
+//						break;
+//					}
+//				}
 				inputStream.read();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();

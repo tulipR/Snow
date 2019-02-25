@@ -7,9 +7,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ServerGroupContext {
 	
 	private AcceptCompletionHandler acceptCompletionHandler;
+	
 	private ReadCompletionHandler readCompletionHandler;
+	
 	private WriteCompletionHandler writeCompletionHandler;
+	
 	private AsynchronousServerSocketChannel serverSocketChannel;
+	
 	private IOHandler handler;
 	
 	/** 服务器配置 */

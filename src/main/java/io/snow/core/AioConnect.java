@@ -6,7 +6,6 @@ import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * TCP连接的包装类
@@ -22,7 +21,7 @@ public class AioConnect {
 	/** 用来做读取操作的ByteBuffer */
 	private ByteBuffer readBuffer = ByteBuffer.allocate(1024);
 	
-	/** 用来做读取操作的ByteBuffer */
+	/** 用来做写操作的ByteBuffer */
 	private ByteBuffer writeBuffer = ByteBuffer.allocate(1024);
 	
 	/** 服务器全局资源 */
