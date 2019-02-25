@@ -1,11 +1,11 @@
-package io.snow.core;
+package io.snow.core.aio;
 
 import java.util.concurrent.TimeUnit;
 
-import io.snow.core.AioServer;
-import io.snow.core.SendUtils;
 import io.snow.core.ServerConfig;
 import io.snow.core.ServerGroupContext;
+import io.snow.core.aio.AioServer;
+import io.snow.core.aio.SendUtils;
 
 public class Main {
 	public static void main(String[] args) {
