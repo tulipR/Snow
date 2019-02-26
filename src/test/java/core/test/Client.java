@@ -86,7 +86,7 @@ public class Client {
 //						break;
 //					}
 //				}
-				inputStream.read();
+				socket.close();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
