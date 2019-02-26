@@ -9,8 +9,6 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 
-import io.snow.core.ServerGroupContext;
-
 public class AioServer {
 	private ServerGroupContext groupContext;
 	

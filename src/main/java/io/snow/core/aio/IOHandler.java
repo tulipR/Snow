@@ -1,6 +1,4 @@
-package io.snow.core;
-
-import io.snow.core.aio.AioConnect;
+package io.snow.core.aio;
 
 public interface IOHandler{
 

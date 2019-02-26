@@ -4,8 +4,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import io.snow.core.ServerGroupContext;
-
 public class SendUtils {
 
 	private static Executor executor = Executors.newFixedThreadPool(10);

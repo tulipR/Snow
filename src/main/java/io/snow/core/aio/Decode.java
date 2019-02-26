@@ -3,8 +3,6 @@ package io.snow.core.aio;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import io.snow.core.ServerGroupContext;
-
 
 /**
  * TCP解包，包格式为 前4个字节代表包完整数据长度，后面的为数据。

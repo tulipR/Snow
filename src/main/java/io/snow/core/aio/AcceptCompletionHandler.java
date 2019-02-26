@@ -1,4 +1,4 @@
-package io.snow.core;
+package io.snow.core.aio;
 
 import java.io.IOException;
 import java.nio.channels.AsynchronousSocketChannel;
