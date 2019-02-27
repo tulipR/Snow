@@ -14,21 +14,14 @@ import java.util.Iterator;
  */
 public class NioProcessor implements Runnable {
 
-	private NioHandler handler;
-
-	private SocketChannel socketChannel;
-
-	private ByteBuffer readBuff = ByteBuffer.allocate(1024);
-
-	private ByteBuffer writeBuff = ByteBuffer.allocate(1024);
+	
 
 	private Selector selector;
 
 	private NioConnect connect;
-
+	
 	public NioProcessor(SocketChannel socketChannel, NioHandler handler) {
-		this.handler = handler;
-		this.socketChannel = socketChannel;
+		connect = new NioConnect(handler,socketChannel);
 		try {
 			selector = Selector.open();
 			socketChannel.register(selector, SelectionKey.OP_READ);
@@ -48,11 +41,7 @@ public class NioProcessor implements Runnable {
 					while (iterator.hasNext()) {
 						SelectionKey next = iterator.next();
 						iterator.remove();
-						if (next.isReadable()) {
-							read();
-						} else if (next.isWritable()) {
-
-						}
+						if (next.isReadable()) readC();
 					}
 				}
 			} catch (IOException e) {
@@ -61,12 +50,12 @@ public class NioProcessor implements Runnable {
 		}
 	}
 
-	private void read() {
+	private void readC() {
 		try {
-			int read = socketChannel.read(readBuff);
+			ByteBuffer readBuff = connect.getReadByteBuffer();
+			int read = connect.getSocketChannel().read(readBuff);
 			if (read == -1) {
-				socketChannel.close();
-				handler.close();
+				connect.close();
 			} else {
 				readBuff.flip();
 				Decode.decode(this);// 进行解包
@@ -82,8 +71,7 @@ public class NioProcessor implements Runnable {
 			}
 		} catch (IOException e) {
 			try {
-				socketChannel.close();
-				handler.abnormalClose(connect, e);
+				connect.abnormalClose(e);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -91,11 +79,7 @@ public class NioProcessor implements Runnable {
 
 	}
 
-	public ByteBuffer getReadBuffer() {
-		return readBuff;
-	}
-
 	public void receive(MessagePacket<String> messagePacket) {
-		handler.received(connect, messagePacket);
+		connect.received(messagePacket);
 	}
 }

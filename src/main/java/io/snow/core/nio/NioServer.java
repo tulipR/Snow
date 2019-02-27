@@ -63,7 +63,6 @@ public class NioServer {
 			ServerSocketChannel serverSocketChannel = (ServerSocketChannel) selectionKey.channel();
 			SocketChannel socketChannel = serverSocketChannel.accept();
 			handler.connected();
-			System.out.println("客户端连接");
 			socketChannel.configureBlocking(false);
 			new Thread(new NioProcessor(socketChannel,handler)).start();
 		}

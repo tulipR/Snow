@@ -5,9 +5,9 @@ package io.snow.core.nio;
  * @author zhangliang	2019.02.26
  *
  */
-public interface NioHandler<T> {
+public interface NioHandler {
 	
-	void received(NioConnect connect, MessagePacket<T> message);
+	void received(NioConnect connect, Message message);
 	
 	void write();
 	

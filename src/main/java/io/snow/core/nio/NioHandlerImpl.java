@@ -5,7 +5,7 @@ package io.snow.core.nio;
  * @author zhangliang
  *
  */
-public class NioHandlerImpl implements NioHandler<String> {
+public class NioHandlerImpl extends AbsNioHandler<String> {
 
 
 	@Override

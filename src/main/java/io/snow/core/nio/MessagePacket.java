@@ -1,6 +1,6 @@
 package io.snow.core.nio;
 
-public class MessagePacket<T> {
+public class MessagePacket<T> implements Message {
 	
 	private String connectInfo;
 

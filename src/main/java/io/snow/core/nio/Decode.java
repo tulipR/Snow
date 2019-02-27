@@ -10,8 +10,8 @@ import java.nio.ByteBuffer;
  */
 public class Decode {
 
-	public static void decode(NioProcessor processor) {
-		ByteBuffer readBuffer = processor.getReadBuffer();
+	public static void decode() {
+		ByteBuffer readBuffer = processor.();
 		int length;
 		short messgaeId;
 		byte[] data = new byte[1024];
