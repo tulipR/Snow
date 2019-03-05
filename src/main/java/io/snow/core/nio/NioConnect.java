@@ -15,8 +15,6 @@ public class NioConnect {
 
 	private ByteBuffer writeBuff = ByteBuffer.allocate(1024);
 	
-	private NioHandler handler;
-	
 	private SocketChannel socketChannel;
 	
 	
@@ -25,12 +23,7 @@ public class NioConnect {
 	 * @param handler 不能为空
 	 * @param socketChannel 不能为空
 	 */
-	public NioConnect(NioHandler handler, SocketChannel socketChannel) {
-		if (handler== null) {
-			throw new NullPointerException("handler can not be null");
-		}
-		this.handler = handler;
-		
+	public NioConnect(SocketChannel socketChannel) {
 		if (socketChannel== null) {
 			throw new NullPointerException("socketChannel can not be null");
 		}
@@ -61,25 +54,11 @@ public class NioConnect {
 		return writeBuff;
 	}
 
-	public void received(MessagePacket<String> message) {
-		handler.received(this,message);
-	}
-
-	public void write() {
-		handler.write();
-	}
-
-	public void connected() {
-		handler.connected();
-	}
-
 	public void close() throws IOException {
 		socketChannel.close();
-		handler.close();
 	}
 
 	public void abnormalClose(Exception e) throws IOException {
 		socketChannel.close();
-		handler.abnormalClose(this,e);
 	}
 }

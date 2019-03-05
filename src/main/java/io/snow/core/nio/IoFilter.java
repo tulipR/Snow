@@ -6,14 +6,14 @@ package io.snow.core.nio;
  *
  */
 public interface IoFilter {
-	
-	void messageReceived(NextFilter nextFilter, Object message) throws Exception;
 
-	void messageWrite(NextFilter nextFilter, String message) throws Exception;
+	void messageReceived(NioConnect connect, NextFilter nextFilter, Object message) throws Exception;
+
+	void messageWrite(NioConnect connect, NextFilter nextFilter, Object message) throws Exception;
 
 	interface NextFilter {
-		void messageReceived(Object message);
+		void messageReceived(NioConnect connect, Object message);
 
-		void messageWrite(String  message);
+		void messageWrite(NioConnect connect, Object message);
 	}
 }

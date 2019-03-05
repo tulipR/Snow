@@ -14,16 +14,14 @@ import java.util.Iterator;
  */
 public class NioProcessor implements Runnable {
 
-	
-
 	private Selector selector;
 
 	private NioConnect connect;
 	
 	private FilterChain filterChain;
 	
-	public NioProcessor(SocketChannel socketChannel, NioHandler handler,FilterChain filterChain) {
-		connect = new NioConnect(handler,socketChannel);
+	public NioProcessor(SocketChannel socketChannel,FilterChain filterChain) {
+		connect = new NioConnect(socketChannel);
 		this.filterChain = filterChain;
 		try {
 			selector = Selector.open();
@@ -61,7 +59,7 @@ public class NioProcessor implements Runnable {
 				connect.close();
 			} else {
 				readBuff.flip();
-				filterChain.fireMessageReceived(readBuff);
+				filterChain.fireMessageReceived(connect,readBuff);
 				// TODO 非完整包的处理方式有待优化
 				// 暂时默认完整包的数据长度比buffer.size()小
 				if (readBuff.hasRemaining()) {

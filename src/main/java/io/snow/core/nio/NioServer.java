@@ -18,25 +18,22 @@ import io.snow.core.codec.ProtocolCodecFilterImpl;
 public class NioServer {
 
 	private NioHandler handler;
-	
-	private final FilterChain filterChain = new FilterChain();
+
+	private FilterChain filterChain;
 
 	public NioServer handler(NioHandler handler) {
-		if (handler == null) {
-			throw new NullPointerException("handler can not be null");
-		}
-		this.handler = handler;
+		filterChain = new FilterChain(handler);
 		return this;
 	}
-	
+
 	/** 在过滤链末尾添加过滤器 */
-	public void addLast(String name,IoFilter filter) {
-		filterChain.addLast(name,filter);
+	public void addLast(String name, IoFilter filter) {
+		filterChain.addLast(name, filter);
 	}
-	
+
 	/** 在过滤链开头添加过滤器 */
-	public void addFrist(String name,IoFilter filter) {
-		filterChain.addFrist(name,filter);
+	public void addFrist(String name, IoFilter filter) {
+		filterChain.addFrist(name, filter);
 	}
 
 	private Selector selector;
@@ -76,15 +73,16 @@ public class NioServer {
 				return;
 			ServerSocketChannel serverSocketChannel = (ServerSocketChannel) selectionKey.channel();
 			SocketChannel socketChannel = serverSocketChannel.accept();
-			handler.connected();
 			socketChannel.configureBlocking(false);
-			new Thread(new NioProcessor(socketChannel,handler,filterChain)).start();
+			
+			new Thread(new NioProcessor(socketChannel, filterChain)).start();
 		}
 	}
 
 	public static void main(String[] args) throws IOException {
 		NioServer nioServer = new NioServer();
-		nioServer.handler(new NioHandlerImpl()).addLast("codec",new ProtocolCodecFilterImpl());
+		nioServer.handler(new NioHandlerImpl()).addLast("codec", new ProtocolCodecFilterImpl());
+		nioServer.start();
 	}
 
 }
