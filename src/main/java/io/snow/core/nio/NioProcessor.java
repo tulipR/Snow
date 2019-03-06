@@ -6,22 +6,35 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * 
  * @author zhangliang 2019.02.25
  *
  */
-public class NioProcessor implements Runnable {
+public class NioProcessor {
 
 	private Selector selector;
 
-	private NioConnect connect;
+    private final Queue<NioConnect> newSessions = new ConcurrentLinkedQueue<>();
+
+    private final Queue<NioConnect> removingSessions = new ConcurrentLinkedQueue<>();
+
+    private final Queue<NioConnect> flushingSessions = new ConcurrentLinkedQueue<>();
 	
 	private FilterChain filterChain;
 	
-	public NioProcessor(SocketChannel socketChannel,FilterChain filterChain) {
-		connect = new NioConnect(socketChannel);
+	/**
+	 * 默认无参构造器
+	 */
+	public NioProcessor() {
+		
+	}
+	
+	public NioProcessor(SocketChannel socketChannel,FilterChain filterChain,NioConnect connect) {
+		this.connect = connect;
 		this.filterChain = filterChain;
 		try {
 			selector = Selector.open();
@@ -31,25 +44,31 @@ public class NioProcessor implements Runnable {
 		}
 
 	}
-
-	@Override
-	public void run() {
-		while (true) {
-			try {
-				int select = selector.select();
-				if (select > 0) {
-					Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-					while (iterator.hasNext()) {
-						SelectionKey next = iterator.next();
-						iterator.remove();
-						if (next.isReadable()) readC();
+	
+	
+	private class Processor implements Runnable {
+		
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					int select = selector.select();
+					if (select > 0) {
+						Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+						while (iterator.hasNext()) {
+							SelectionKey next = iterator.next();
+							iterator.remove();
+							if (next.isReadable()) readC();
+						}
 					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
 		}
 	}
+
+	
 
 	private void readC() {
 		try {

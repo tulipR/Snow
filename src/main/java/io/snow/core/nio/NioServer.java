@@ -7,6 +7,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.snow.core.codec.ProtocolCodecFilterImpl;
 
@@ -17,9 +18,16 @@ import io.snow.core.codec.ProtocolCodecFilterImpl;
  */
 public class NioServer {
 
-	private NioHandler handler;
-
 	private FilterChain filterChain;
+
+	private NioProcessor[] processors;
+	
+	public NioServer(int availableProcessors) {
+		processors = new NioProcessor[availableProcessors];
+		for (int i = 0; i < availableProcessors; i++) {
+			processors[i]=new NioProcessor();
+		}
+	}
 
 	public NioServer handler(NioHandler handler) {
 		filterChain = new FilterChain(handler);
@@ -74,13 +82,12 @@ public class NioServer {
 			ServerSocketChannel serverSocketChannel = (ServerSocketChannel) selectionKey.channel();
 			SocketChannel socketChannel = serverSocketChannel.accept();
 			socketChannel.configureBlocking(false);
-			
 			new Thread(new NioProcessor(socketChannel, filterChain)).start();
 		}
 	}
 
 	public static void main(String[] args) throws IOException {
-		NioServer nioServer = new NioServer();
+		NioServer nioServer = new NioServer(Runtime.getRuntime().availableProcessors());
 		nioServer.handler(new NioHandlerImpl()).addLast("codec", new ProtocolCodecFilterImpl());
 		nioServer.start();
 	}
