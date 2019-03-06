@@ -33,8 +33,7 @@ public class NioProcessor {
 		
 	}
 	
-	public NioProcessor(SocketChannel socketChannel,FilterChain filterChain,NioConnect connect) {
-		this.connect = connect;
+	public NioProcessor(SocketChannel socketChannel,FilterChain filterChain) {
 		this.filterChain = filterChain;
 		try {
 			selector = Selector.open();
@@ -58,7 +57,7 @@ public class NioProcessor {
 						while (iterator.hasNext()) {
 							SelectionKey next = iterator.next();
 							iterator.remove();
-							if (next.isReadable()) readC();
+							if (next.isReadable()) readC(next);
 						}
 					}
 				} catch (IOException e) {
@@ -70,7 +69,8 @@ public class NioProcessor {
 
 	
 
-	private void readC() {
+	private void readC(SelectionKey selectionKey) {
+		selectionKey.attachment()
 		try {
 			ByteBuffer readBuff = connect.getReadByteBuffer();
 			int read = connect.getSocketChannel().read(readBuff);
