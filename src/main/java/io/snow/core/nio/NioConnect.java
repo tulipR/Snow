@@ -26,7 +26,6 @@ public class NioConnect {
 	
 	/**
 	 * 构造函数
-	 * @param handler 不能为空
 	 * @param socketChannel 不能为空
 	 */
 	public NioConnect(SocketChannel socketChannel) {

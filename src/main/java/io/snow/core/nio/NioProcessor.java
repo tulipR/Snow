@@ -8,6 +8,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 
@@ -18,30 +19,42 @@ public class NioProcessor {
 
 	private Selector selector;
 
-    private final Queue<NioConnect> newSessions = new ConcurrentLinkedQueue<>();
+    private final Queue<NioConnect> newConnects = new ConcurrentLinkedQueue<>();
 
-    private final Queue<NioConnect> removingSessions = new ConcurrentLinkedQueue<>();
+    private final Queue<NioConnect> removingConnects = new ConcurrentLinkedQueue<>();
 
-    private final Queue<NioConnect> flushingSessions = new ConcurrentLinkedQueue<>();
+    private final Queue<NioConnect> flushingConnects = new ConcurrentLinkedQueue<>();
 	
 	private FilterChain filterChain;
 	
-	/**
-	 * 默认无参构造器
-	 */
-	public NioProcessor() {
-		
-	}
+	private AtomicReference<Processor>  processorRef = new AtomicReference<>();
 	
-	public NioProcessor(SocketChannel socketChannel,FilterChain filterChain) {
-		this.filterChain = filterChain;
+	
+	public NioProcessor() {
 		try {
 			selector = Selector.open();
-			socketChannel.register(selector, SelectionKey.OP_READ);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+	}
+	
+	public void setFilterChain(FilterChain filterChain) {
+		this.filterChain = filterChain;
+	}
+	
+	/** 初始化连接 */
+	public void initConnect(NioConnect connect) throws IOException {
+		SocketChannel socketChannel = connect.getSocketChannel();
+		socketChannel.configureBlocking(false);
+		socketChannel.register(selector,SelectionKey.OP_READ,connect);
+	}
+	
+	public void startupProcessor() {
+		if (processorRef.get() == null) {
+			Processor processor = new Processor();
+			processorRef.set(processor);
+			new Thread(processor).start();
+		}
 	}
 	
 	
@@ -70,7 +83,7 @@ public class NioProcessor {
 	
 
 	private void readC(SelectionKey selectionKey) {
-		selectionKey.attachment()
+		NioConnect connect=(NioConnect)selectionKey.attachment();
 		try {
 			ByteBuffer readBuff = connect.getReadByteBuffer();
 			int read = connect.getSocketChannel().read(readBuff);

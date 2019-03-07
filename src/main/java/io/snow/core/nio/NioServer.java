@@ -7,7 +7,6 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import io.snow.core.codec.ProtocolCodecFilterImpl;
 
@@ -28,9 +27,17 @@ public class NioServer {
 			processors[i]=new NioProcessor();
 		}
 	}
+	
+	/** 通过连接id获得NioProcessor */
+	public NioProcessor getNioProcessor(long connectId) {
+		return processors[Math.abs((int) connectId) % processors.length];
+	}
 
 	public NioServer handler(NioHandler handler) {
 		filterChain = new FilterChain(handler);
+		for(NioProcessor processor : processors) {
+			processor.setFilterChain(filterChain);
+		}
 		return this;
 	}
 
@@ -81,8 +88,10 @@ public class NioServer {
 				return;
 			ServerSocketChannel serverSocketChannel = (ServerSocketChannel) selectionKey.channel();
 			SocketChannel socketChannel = serverSocketChannel.accept();
-			socketChannel.configureBlocking(false);
-			new Thread(new NioProcessor(socketChannel, filterChain)).start();
+			NioConnect connect = new NioConnect(socketChannel);
+			NioProcessor nioProcessor=getNioProcessor(connect.getId());
+			nioProcessor.initConnect(connect);
+			nioProcessor.startupProcessor();
 		}
 	}
 
