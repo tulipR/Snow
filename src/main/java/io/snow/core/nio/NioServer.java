@@ -96,7 +96,7 @@ public class NioServer {
 	}
 
 	public static void main(String[] args) throws IOException {
-		NioServer nioServer = new NioServer(Runtime.getRuntime().availableProcessors());
+		NioServer nioServer = new NioServer(1);
 		nioServer.handler(new NioHandlerImpl()).addLast("codec", new ProtocolCodecFilterImpl());
 		nioServer.start();
 	}

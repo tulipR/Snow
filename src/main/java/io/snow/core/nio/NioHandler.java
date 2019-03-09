@@ -9,12 +9,12 @@ public interface NioHandler {
 	
 	void received(NioConnect connect, Message message);
 	
-	void write();
+	void write(NioConnect connect, Object message);
 	
-	void connected();
+	void connected(NioConnect connect);
 	
 	/** 正常关闭 */
-	void close();
+	void close(NioConnect connect);
 	
 	/** 异常关闭 */
 	void abnormalClose(NioConnect connect, Exception e);

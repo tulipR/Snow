@@ -86,7 +86,56 @@ public class FilterChain {
 					EntryImpl nextEntry = EntryImpl.this.prevEntry;
 					callPreviousFilterWrite(connect, nextEntry, writeRequest);
 				}
+
+				@Override
+				public void connectCreated(NioConnect connect) {
+					EntryImpl nextEntry = EntryImpl.this.nextEntry;
+					callNextConnectCreated(nextEntry, connect);
+				}
+
+				@Override
+				public void connectClosed(NioConnect connect) {
+					EntryImpl nextEntry = EntryImpl.this.nextEntry;
+					callNextConnectClosed(nextEntry, connect);
+				}
+
+				@Override
+				public void connectAbnormalClosed(NioConnect connect, Exception e) {
+					EntryImpl nextEntry = EntryImpl.this.nextEntry;
+					callNextConnectAbnormalClosed(nextEntry, connect, e);
+				}
 			};
+		}
+	}
+		
+		
+	protected void callNextConnectAbnormalClosed(EntryImpl entry,NioConnect connect,Exception exception) {
+		IoFilter filter = entry.getFilter();
+		NextFilter nextFilter = entry.getNextFilter();
+		try {
+			filter.connectAbnomalClosed(connect, nextFilter, exception);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void callNextConnectClosed(EntryImpl entry,NioConnect connect) {
+		IoFilter filter = entry.getFilter();
+		NextFilter nextFilter = entry.getNextFilter();
+		try {
+			filter.connectClosed(connect, nextFilter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void callNextConnectCreated(EntryImpl entry,NioConnect connect) {
+		IoFilter filter = entry.getFilter();
+		NextFilter nextFilter = entry.getNextFilter();
+		try {
+			filter.connectCreated(connect, nextFilter);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -127,6 +176,21 @@ public class FilterChain {
 				handler.received(connect, (Message) message);
 			}
 		}
+		
+		@Override
+		public void connectCreated(NioConnect connect,NextFilter nextFilter) {
+			handler.connected(connect);
+		}
+		
+		@Override
+		public void connectClosed(NioConnect connect,NextFilter nextFilter) {
+			handler.close(connect);
+		}
+		
+		@Override
+		public void connectAbnomalClosed(NioConnect connect,NextFilter nextFilter, Exception e) {
+			handler.abnormalClose(connect,e);
+		}
 	}
 
 	public void fireMessageReceived(NioConnect connect, Object message) {
@@ -135,6 +199,18 @@ public class FilterChain {
 
 	public void fireMessageWrite(NioConnect connect, Object message) {
 		callPreviousFilterWrite(connect, tail, message);
+	}
+	
+	public void fireConnectClosed(NioConnect connect) {
+		callNextConnectClosed(head,connect);
+	}
+	
+	public void fireConnectAbnormalClosed(NioConnect connect,Exception e) {
+		callNextConnectAbnormalClosed(head,connect,e);
+	}
+	
+	public void fireConnectCreated(NioConnect connect) {
+		callNextConnectCreated(head,connect);
 	}
 
 	public void addLast(String name, IoFilter filter) {

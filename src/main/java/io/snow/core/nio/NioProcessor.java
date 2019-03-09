@@ -46,7 +46,9 @@ public class NioProcessor {
 	public void initConnect(NioConnect connect) throws IOException {
 		SocketChannel socketChannel = connect.getSocketChannel();
 		socketChannel.configureBlocking(false);
+		// 当selector阻塞时，此方法也将阻塞
 		socketChannel.register(selector,SelectionKey.OP_READ,connect);
+		filterChain.fireConnectCreated(connect);
 	}
 	
 	public void startupProcessor() {
@@ -64,7 +66,7 @@ public class NioProcessor {
 		public void run() {
 			while (true) {
 				try {
-					int select = selector.select();
+					int select = selector.select(1000);
 					if (select > 0) {
 						Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
 						while (iterator.hasNext()) {
@@ -89,6 +91,8 @@ public class NioProcessor {
 			int read = connect.getSocketChannel().read(readBuff);
 			if (read == -1) {
 				connect.close();
+				selectionKey.cancel();
+				filterChain.fireConnectClosed(connect);
 			} else {
 				readBuff.flip();
 				filterChain.fireMessageReceived(connect,readBuff);
@@ -104,7 +108,9 @@ public class NioProcessor {
 			}
 		} catch (IOException e) {
 			try {
-				connect.abnormalClose(e);
+				connect.close();
+				selectionKey.channel();
+				filterChain.fireConnectAbnormalClosed(connect,e);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

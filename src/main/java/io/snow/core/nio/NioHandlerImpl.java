@@ -14,17 +14,17 @@ public class NioHandlerImpl extends AbsNioHandler<String> {
 	}
 
 	@Override
-	public void write() {
+	public void write(NioConnect connect, Object messahe) {
 		
 	}
 
 	@Override
-	public void connected() {
-		
+	public void connected(NioConnect connect) {
+		System.out.println("创建连接");
 	}
 
 	@Override
-	public void close() {
+	public void close(NioConnect connect) {
 		System.out.println("服务器正常关闭");
 	}
 
@@ -32,5 +32,4 @@ public class NioHandlerImpl extends AbsNioHandler<String> {
 	public void abnormalClose(NioConnect connect, Exception e) {
 		System.out.println("服务器异常关闭"+e);
 	}
-
 }

@@ -13,4 +13,19 @@ public class IoFilterAdapter implements IoFilter {
 		nextFilter.messageWrite(connect, message);
 	}
 
+	@Override
+	public void connectCreated(NioConnect connect,NextFilter nextFilter) {
+		nextFilter.connectCreated(connect);
+	}
+
+	@Override
+	public void connectClosed(NioConnect connect,NextFilter nextFilter) {
+		nextFilter.connectClosed(connect);
+	}
+
+	@Override
+	public void connectAbnomalClosed(NioConnect connect,NextFilter nextFilter, Exception exception) {
+		nextFilter.connectAbnormalClosed(connect, exception);
+	}
+
 }

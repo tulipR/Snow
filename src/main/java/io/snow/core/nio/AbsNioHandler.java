@@ -14,11 +14,11 @@ public abstract class AbsNioHandler<T> implements NioHandler
 		received(connect,(MessagePacket<T>)message);
 	}
 
-	public abstract void write();
+	public abstract void write(NioConnect connect, Object message);
 	
-	public abstract void connected();
+	public abstract void connected(NioConnect connect);
 
-	public abstract void close();
+	public abstract void close(NioConnect connect);
 
 	public abstract void abnormalClose(NioConnect connect,Exception e);
 	
