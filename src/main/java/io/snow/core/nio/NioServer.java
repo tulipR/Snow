@@ -16,6 +16,8 @@ import java.util.Iterator;
 public class NioServer {
 
 	private NioHandler handler;
+	
+	private final FilterChain filterChain = new FilterChain();
 
 	public NioServer handler(NioHandler handler) {
 		if (handler == null) {
@@ -23,6 +25,16 @@ public class NioServer {
 		}
 		this.handler = handler;
 		return this;
+	}
+	
+	/** 在过滤链末尾添加过滤器 */
+	public void addLast(String name,IoFilter filter) {
+		filterChain.addLast(name,filter);
+	}
+	
+	/** 在过滤链开头添加过滤器 */
+	public void addFrist(String name,IoFilter filter) {
+		filterChain.addFrist(name,filter);
 	}
 
 	private Selector selector;
@@ -69,7 +81,9 @@ public class NioServer {
 	}
 
 	public static void main(String[] args) throws IOException {
-		new NioServer().handler(new NioHandlerImpl()).start();
+		NioServer nioServer=new NioServer();
+		nioServer.handler(new NioHandlerImpl())
+					.;
 	}
 
 }
