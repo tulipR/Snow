@@ -7,12 +7,12 @@ package io.snow.core.nio;
  */
 public interface IoFilter {
 	
-	void messageReceived(NextFilter nextFilter, String message) throws Exception;
+	void messageReceived(NextFilter nextFilter, Object message) throws Exception;
 
 	void messageWrite(NextFilter nextFilter, String message) throws Exception;
 
 	interface NextFilter {
-		void messageReceived(String message);
+		void messageReceived(Object message);
 
 		void messageWrite(String  message);
 	}

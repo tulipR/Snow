@@ -20,8 +20,11 @@ public class NioProcessor implements Runnable {
 
 	private NioConnect connect;
 	
-	public NioProcessor(SocketChannel socketChannel, NioHandler handler) {
+	private FilterChain filterChain;
+	
+	public NioProcessor(SocketChannel socketChannel, NioHandler handler,FilterChain filterChain) {
 		connect = new NioConnect(handler,socketChannel);
+		this.filterChain = filterChain;
 		try {
 			selector = Selector.open();
 			socketChannel.register(selector, SelectionKey.OP_READ);
@@ -58,7 +61,7 @@ public class NioProcessor implements Runnable {
 				connect.close();
 			} else {
 				readBuff.flip();
-				Decode.decode(this);// 进行解包
+				filterChain.fireMessageReceived(readBuff);
 				// TODO 非完整包的处理方式有待优化
 				// 暂时默认完整包的数据长度比buffer.size()小
 				if (readBuff.hasRemaining()) {
@@ -77,9 +80,5 @@ public class NioProcessor implements Runnable {
 			}
 		}
 
-	}
-
-	public void receive(MessagePacket<String> messagePacket) {
-		connect.received(messagePacket);
 	}
 }

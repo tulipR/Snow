@@ -8,6 +8,8 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
+import io.snow.core.codec.ProtocolCodecFilterImpl;
+
 /**
  * 
  * @author zhangliang 2019.02.25
@@ -76,14 +78,13 @@ public class NioServer {
 			SocketChannel socketChannel = serverSocketChannel.accept();
 			handler.connected();
 			socketChannel.configureBlocking(false);
-			new Thread(new NioProcessor(socketChannel,handler)).start();
+			new Thread(new NioProcessor(socketChannel,handler,filterChain)).start();
 		}
 	}
 
 	public static void main(String[] args) throws IOException {
-		NioServer nioServer=new NioServer();
-		nioServer.handler(new NioHandlerImpl())
-					.;
+		NioServer nioServer = new NioServer();
+		nioServer.handler(new NioHandlerImpl()).addLast("codec",new ProtocolCodecFilterImpl());
 	}
 
 }

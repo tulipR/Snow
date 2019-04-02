@@ -4,7 +4,7 @@ package io.snow.core.nio;
 public class IoFilterAdapter implements IoFilter {
 
 	@Override
-	public void messageReceived(NextFilter nextFilter, String message) throws Exception {
+	public void messageReceived(NextFilter nextFilter, Object message) throws Exception {
 		nextFilter.messageReceived(message);
 	}
 

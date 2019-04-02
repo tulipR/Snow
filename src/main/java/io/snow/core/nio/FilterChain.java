@@ -66,9 +66,9 @@ public class FilterChain {
             this.nextFilter = new NextFilter() {
 
 				@Override
-				public void messageReceived(String message) {
+				public void messageReceived(Object object) {
 					EntryImpl nextEntry = EntryImpl.this.nextEntry;
-					callNextMessageReceived(nextEntry, message);
+					callNextMessageReceived(nextEntry, object);
 				}
 
 				@Override
@@ -90,7 +90,7 @@ public class FilterChain {
 		}
 	}
 	
-	private void callNextMessageReceived(EntryImpl entry, String message) {
+	private void callNextMessageReceived(EntryImpl entry, Object message) {
 		IoFilter filter = entry.getFilter();
         NextFilter nextFilter = entry.getNextFilter();
         try {
@@ -113,14 +113,14 @@ public class FilterChain {
 	/** 读消息左后处理节点 */
 	private class TailFilter extends IoFilterAdapter {
 		@Override
-		public void messageReceived(NextFilter nextFilter, String message) throws Exception {
+		public void messageReceived(NextFilter nextFilter, Object message) throws Exception {
 			// 将消息交给IoHandle去处理
 			System.out.println("messageReceived:"+message);
 		}
 	}
 	
 	
-	public void fireMessageReceived(String message) {
+	public void fireMessageReceived(Object message) {
 		callNextMessageReceived(head, message);
 	}
 	
