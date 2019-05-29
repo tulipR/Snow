@@ -45,8 +45,6 @@ public class AioConnect {
 		lastReceiveTime = System.currentTimeMillis();
 		active = true;
 		
-		
-		
 		try {
 			socketChannel.setOption(StandardSocketOptions.TCP_NODELAY, false);
 			Set<SocketOption<?>> supportedOptions = socketChannel.supportedOptions();
@@ -55,7 +53,6 @@ public class AioConnect {
 				System.out.println(option.name() + ":" + object);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

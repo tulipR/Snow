@@ -42,10 +42,12 @@ public class AioServer {
 				serverSocketChannel.bind(new InetSocketAddress(groupContext.getPort()));
 			}
 			serverSocketChannel.accept(groupContext, groupContext.getAcceptCompletionHandler());
+			
 			System.out.println("---------------服务器启动----------------");
+			
+			ArrayBlockingQueue<MessagePacket<String>> messageQueue = groupContext.getMessageQueue();
+			MessagePacket<String> poll = null;
 			while (true) {
-				ArrayBlockingQueue<MessagePacket<String>> messageQueue = groupContext.getMessageQueue();
-				MessagePacket<String> poll = null;
 				try {
 					poll = messageQueue.take();
 					System.out.println(poll.toString());
@@ -53,8 +55,6 @@ public class AioServer {
 					e.printStackTrace();
 				}
 			}
-			
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
