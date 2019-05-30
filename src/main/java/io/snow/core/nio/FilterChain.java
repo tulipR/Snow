@@ -168,7 +168,7 @@ public class FilterChain {
 		}
 	}
 
-	/** 读消息左后处理节点 */
+	/** 读消息最后处理节点 */
 	private class TailFilter extends IoFilterAdapter {
 		@Override
 		public void messageReceived(NioConnect connect, NextFilter nextFilter, Object message) throws Exception {

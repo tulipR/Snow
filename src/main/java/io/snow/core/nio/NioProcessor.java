@@ -44,10 +44,7 @@ public class NioProcessor {
 	
 	/** 初始化连接 */
 	public void initConnect(NioConnect connect) throws IOException {
-		SocketChannel socketChannel = connect.getSocketChannel();
-		socketChannel.configureBlocking(false);
-		// 当selector阻塞时，此方法也将阻塞
-		socketChannel.register(selector,SelectionKey.OP_READ,connect);
+		connect.init(selector);
 		filterChain.fireConnectCreated(connect);
 	}
 	
@@ -88,7 +85,7 @@ public class NioProcessor {
 		NioConnect connect=(NioConnect)selectionKey.attachment();
 		try {
 			ByteBuffer readBuff = connect.getReadByteBuffer();
-			int read = connect.getSocketChannel().read(readBuff);
+			int read = connect.read(readBuff);
 			if (read == -1) {
 				connect.close();
 				selectionKey.cancel();

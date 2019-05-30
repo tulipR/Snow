@@ -2,6 +2,8 @@ package io.snow.core.nio;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -41,28 +43,26 @@ public class NioConnect {
 		return id;
 	}
 	
-	/**
-	 * 获得当前连接的SocketChannel
-	 * @return 
-	 */
-	protected SocketChannel getSocketChannel() {
-		return socketChannel;
+	/** 初始化连接 */
+	public void init(Selector selector) throws IOException {
+		socketChannel.configureBlocking(false);
+		// 当selector阻塞时，此方法也将阻塞
+		socketChannel.register(selector,SelectionKey.OP_READ,this);
 	}
 	
-	/**
-	 * 获得当前连接的read ByteBuffer
-	 * @return
-	 */
+	/** 获得当前连接的read ByteBuffer */
 	protected ByteBuffer getReadByteBuffer() {
 		return readBuff;
 	}
 	
-	/**
-	 * 获得当前连接的write ByteBuffer
-	 * @return
-	 */
+	/** 获得当前连接的write ByteBuffer */
 	protected ByteBuffer getWriteByteBuffer() {
 		return writeBuff;
+	}
+	
+	/** 读数据 */
+	protected int read(ByteBuffer data) throws IOException {
+		return socketChannel.read(data);
 	}
 
 	public void close() throws IOException {
