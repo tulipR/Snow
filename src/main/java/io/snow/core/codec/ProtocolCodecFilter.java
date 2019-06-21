@@ -27,6 +27,7 @@ public abstract class ProtocolCodecFilter extends IoFilterAdapter{
 		while(!list.isEmpty()) {
 			nextFilter.messageReceived(connect, list.poll());
 		}
+		
 	}
 	
 	@Override

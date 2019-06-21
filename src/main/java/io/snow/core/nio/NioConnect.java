@@ -20,6 +20,8 @@ public class NioConnect {
 	
 	private SocketChannel socketChannel;
 	
+	private SelectionKey selectionKey;
+	
 	/** id生成器 */
     private static AtomicLong idGenerator = new AtomicLong(0);
     
@@ -47,7 +49,7 @@ public class NioConnect {
 	public void init(Selector selector) throws IOException {
 		socketChannel.configureBlocking(false);
 		// 当selector阻塞时，此方法也将阻塞
-		socketChannel.register(selector,SelectionKey.OP_READ,this);
+		selectionKey = socketChannel.register(selector,SelectionKey.OP_READ,this);
 	}
 	
 	/** 获得当前连接的read ByteBuffer */
@@ -66,8 +68,8 @@ public class NioConnect {
 	}
 	
 	/** 写数据 */
-	protected void write(ByteBuffer data) throws IOException {
-		int write=socketChannel.write(data);
+	protected int write(ByteBuffer data) throws IOException {
+		return socketChannel.write(data);
 	}
 
 	public void close() throws IOException {
@@ -76,5 +78,19 @@ public class NioConnect {
 
 	public void abnormalClose(Exception e) throws IOException {
 		socketChannel.close();
+	}
+	
+	public void setOpWrite() {
+		int interestOps=selectionKey.interestOps();
+		if ((interestOps & SelectionKey.OP_WRITE) == 0) {
+            selectionKey.interestOps(interestOps | SelectionKey.OP_WRITE);
+        }
+	}
+	
+	public void cleanOpWrite() {
+		final int interestOps = selectionKey.interestOps();
+        if ((interestOps & SelectionKey.OP_WRITE) != 0) {
+            selectionKey.interestOps(interestOps & ~SelectionKey.OP_WRITE);
+        }
 	}
 }
