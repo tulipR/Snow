@@ -86,10 +86,15 @@ public class ClientTest {
 //						break;
 //					}
 //				}
+				Thread.sleep(500000);
 				inputStream.read();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			catch(InterruptedException e)
+			{
 				e.printStackTrace();
 			}
 		}
