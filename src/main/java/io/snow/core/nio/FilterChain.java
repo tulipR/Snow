@@ -37,6 +37,8 @@ public class FilterChain {
 		private final String name;
 
 		private IoFilter filter;
+		
+		private final NextFilter nextFilter;
 
 		public EntryImpl getPrevEntry() {
 			return prevEntry;
@@ -57,8 +59,6 @@ public class FilterChain {
 		public NextFilter getNextFilter() {
 			return nextFilter;
 		}
-
-		private final NextFilter nextFilter;
 
 		private EntryImpl(EntryImpl prevEntry, EntryImpl nextEntry, String name, IoFilter filter) {
 			if (filter == null) {

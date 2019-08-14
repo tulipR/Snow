@@ -84,8 +84,7 @@ public class NioServer {
 		}
 
 		private void initAndStartProcessor(SelectionKey selectionKey) throws IOException {
-			if (!selectionKey.isAcceptable())
-				return;
+			if (!selectionKey.isAcceptable()) return;
 			ServerSocketChannel serverSocketChannel = (ServerSocketChannel) selectionKey.channel();
 			SocketChannel socketChannel = serverSocketChannel.accept();
 			NioConnect connect = new NioConnect(socketChannel);
@@ -94,11 +93,4 @@ public class NioServer {
 			nioProcessor.startupProcessor();
 		}
 	}
-
-	public static void main(String[] args) throws IOException {
-		NioServer nioServer = new NioServer(1);
-		nioServer.handler(new NioHandlerImpl()).addLast("codec", new ProtocolCodecFilterImpl());
-		nioServer.start();
-	}
-
 }

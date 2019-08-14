@@ -64,6 +64,11 @@ public class NioConnect {
 	protected int read(ByteBuffer data) throws IOException {
 		return socketChannel.read(data);
 	}
+	
+	/** 写数据 */
+	protected void write(ByteBuffer data) throws IOException {
+		int write=socketChannel.write(data);
+	}
 
 	public void close() throws IOException {
 		socketChannel.close();

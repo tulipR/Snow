@@ -15,7 +15,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class Client {
+public class ClientTest {
 
 	public static void main(String[] args) throws IOException {
 //		for (int i = 0; i < 100; i++) {
